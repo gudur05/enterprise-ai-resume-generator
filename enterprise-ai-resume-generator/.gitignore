@@ -1,0 +1,40 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment variables
+.env
+.env.local
+.env.*
+
+# Keep example environment file
+!.env.example
+
+# Uploaded/generated files
+uploads/
+generated/
+generated_resume.pdf
+AI_Generated_Resume.pdf
+AI_Resume_Analysis_Report.pdf
+*.log
+
+# Python tooling
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
