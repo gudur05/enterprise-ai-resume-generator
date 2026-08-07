@@ -38,3 +38,9 @@ htmlcov/
 # OS
 .DS_Store
 Thumbs.db
+
+# Generated vector database
+vector_db/
+
+# Temporary dependency snapshot
+requirements-working.txt

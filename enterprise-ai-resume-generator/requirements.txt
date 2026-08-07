@@ -22,7 +22,6 @@ cymem==2.0.13
 distro==1.9.0
 durationpy==0.10
 emoji==2.15.0
-en_core_web_sm==3.8.0
 fastapi==0.139.2
 filelock==3.32.0
 filetype==1.2.0
