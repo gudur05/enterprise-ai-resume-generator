@@ -1,88 +1,76 @@
-import { Box } from "@mui/material";
+import { useState } from "react";
+
+import {
+  Box
+} from "@mui/material";
 
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
-import Footer from "../components/Footer";
+
 
 function MainLayout({ children }) {
+  const [
+    mobileOpen,
+    setMobileOpen
+  ] = useState(false);
+
+
+  const handleMenuClick = () => {
+    setMobileOpen(true);
+  };
+
+
+  const handleDrawerClose = () => {
+    setMobileOpen(false);
+  };
+
+
   return (
     <Box
       sx={{
         display: "flex",
         width: "100%",
-        height: "100vh",
-        background: "#121212",
-        overflow: "hidden"
+        minHeight: "100vh",
+        backgroundColor: "#121212"
       }}
     >
-      {/* STATIC LEFT SIDEBAR */}
-      <Box
-        sx={{
-          flexShrink: 0,
-          height: "100vh",
-          overflow: "hidden",
-          borderRight: "1px solid #2A2A2A"
-        }}
-      >
-        <Sidebar />
-      </Box>
+      <Sidebar
+        mobileOpen={mobileOpen}
+        onClose={handleDrawerClose}
+      />
 
-      {/* RIGHT APPLICATION AREA */}
+
       <Box
         sx={{
-          flex: 1,
+          flexGrow: 1,
           minWidth: 0,
-          height: "100vh",
-          display: "flex",
-          flexDirection: "column",
-          background: "#121212",
-          overflow: "hidden"
+
+          width: {
+            xs: "100%",
+            md: "calc(100% - 240px)"
+          }
         }}
       >
-        {/* STATIC TOP HEADER */}
-        <Box
-          component="header"
-          sx={{
-            flexShrink: 0,
-            zIndex: 1200,
-            background: "#171717",
-            borderBottom: "1px solid #2D2D2D"
-          }}
-        >
-          <Header />
-        </Box>
+        <Header
+          onMenuClick={handleMenuClick}
+        />
 
-        {/* ONLY THIS AREA SCROLLS */}
+
         <Box
           component="main"
           sx={{
-            flex: 1,
-            minHeight: 0,
             width: "100%",
-            overflowY: "auto",
+            maxWidth: "100vw",
             overflowX: "hidden",
-            background: "#121212",
-            scrollBehavior: "smooth"
+            boxSizing: "border-box"
           }}
         >
           {children}
-        </Box>
-
-        {/* STATIC BOTTOM FOOTER */}
-        <Box
-          component="footer"
-          sx={{
-            flexShrink: 0,
-            zIndex: 1200,
-            background: "#0D0D0D",
-            borderTop: "1px solid #2D2D2D"
-          }}
-        >
-          <Footer />
         </Box>
       </Box>
     </Box>
   );
 }
+
 
 export default MainLayout;

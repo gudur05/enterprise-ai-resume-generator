@@ -1,4 +1,6 @@
-import { useState } from "react";
+import {
+  useState
+} from "react";
 
 import {
   Alert,
@@ -11,10 +13,14 @@ import {
   Typography
 } from "@mui/material";
 
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import CloudUploadIcon
+  from "@mui/icons-material/CloudUpload";
 
-import api from "../api/api";
-import ProcessingLoader from "./ProcessingLoader";
+import api
+  from "../api/api";
+
+import ProcessingLoader
+  from "./ProcessingLoader";
 
 
 const initialWorkflowSteps = [
@@ -51,19 +57,45 @@ const initialWorkflowSteps = [
 ];
 
 
-function ResumeUpload({ setResult }) {
+function ResumeUpload({
+  setResult
+}) {
+  const [
+    jobDescription,
+    setJobDescription
+  ] = useState("");
 
-  const [jobDescription, setJobDescription] = useState("");
-  const [file, setFile] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [
+    file,
+    setFile
+  ] = useState(null);
 
-  const [workflowSteps, setWorkflowSteps] =
-    useState(initialWorkflowSteps);
+  const [
+    loading,
+    setLoading
+  ] = useState(false);
 
-  const [errorMessage, setErrorMessage] = useState("");
-  const [timeline, setTimeline] = useState([]);
+  const [
+    workflowSteps,
+    setWorkflowSteps
+  ] = useState(
+    initialWorkflowSteps
+  );
 
-  const [notification, setNotification] = useState({
+  const [
+    errorMessage,
+    setErrorMessage
+  ] = useState("");
+
+  const [
+    timeline,
+    setTimeline
+  ] = useState([]);
+
+  const [
+    notification,
+    setNotification
+  ] = useState({
     open: false,
     message: "",
     severity: "info"
@@ -74,13 +106,11 @@ function ResumeUpload({ setResult }) {
     message,
     severity = "info"
   ) => {
-
     setNotification({
       open: true,
       message,
       severity
     });
-
   };
 
 
@@ -88,54 +118,74 @@ function ResumeUpload({ setResult }) {
     event,
     reason
   ) => {
-
-    if (reason === "clickaway") {
+    if (
+      reason === "clickaway"
+    ) {
       return;
     }
 
-    setNotification((currentNotification) => ({
-      ...currentNotification,
-      open: false
-    }));
-
+    setNotification(
+      (currentNotification) => ({
+        ...currentNotification,
+        open: false
+      })
+    );
   };
 
 
   const getCurrentTime = () =>
-    new Date().toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit"
-    });
+    new Date()
+      .toLocaleTimeString(
+        [],
+        {
+          hour:
+            "2-digit",
+
+          minute:
+            "2-digit",
+
+          second:
+            "2-digit"
+        }
+      );
 
 
   const addTimelineEvent = (
     message,
     type = "info"
   ) => {
+    setTimeline(
+      (currentTimeline) => [
+        ...currentTimeline,
+        {
+          time:
+            getCurrentTime(),
 
-    setTimeline((currentTimeline) => [
-      ...currentTimeline,
-      {
-        time: getCurrentTime(),
-        message,
-        type
-      }
-    ]);
+          message,
 
+          type
+        }
+      ]
+    );
   };
 
 
-  const calculateProgress = (steps) => {
-
-    const completedCount = steps.filter(
-      (step) => step.status === "completed"
-    ).length;
+  const calculateProgress = (
+    steps
+  ) => {
+    const completedCount =
+      steps.filter(
+        (step) =>
+          step.status ===
+          "completed"
+      ).length;
 
     return Math.round(
-      (completedCount / steps.length) * 100
+      (
+        completedCount /
+        steps.length
+      ) * 100
     );
-
   };
 
 
@@ -143,64 +193,68 @@ function ResumeUpload({ setResult }) {
     stepId,
     status
   ) => {
-
-    setWorkflowSteps((currentSteps) =>
-      currentSteps.map((step) =>
-        step.id === stepId
-          ? {
-              ...step,
-              status
-            }
-          : step
-      )
+    setWorkflowSteps(
+      (currentSteps) =>
+        currentSteps.map(
+          (step) =>
+            step.id === stepId
+              ? {
+                  ...step,
+                  status
+                }
+              : step
+        )
     );
-
   };
 
 
   const completeStepAndActivateNext = (
     completedStepId
   ) => {
+    setWorkflowSteps(
+      (currentSteps) => {
+        const completedIndex =
+          currentSteps
+            .findIndex(
+              (step) =>
+                step.id ===
+                completedStepId
+            );
 
-    setWorkflowSteps((currentSteps) => {
+        return currentSteps.map(
+          (
+            step,
+            index
+          ) => {
+            if (
+              step.id ===
+              completedStepId
+            ) {
+              return {
+                ...step,
+                status:
+                  "completed"
+              };
+            }
 
-      const completedIndex =
-        currentSteps.findIndex(
-          (step) =>
-            step.id === completedStepId
+            if (
+              index ===
+                completedIndex + 1 &&
+              step.status !==
+                "completed"
+            ) {
+              return {
+                ...step,
+                status:
+                  "active"
+              };
+            }
+
+            return step;
+          }
         );
-
-      return currentSteps.map(
-        (step, index) => {
-
-          if (step.id === completedStepId) {
-
-            return {
-              ...step,
-              status: "completed"
-            };
-
-          }
-
-          if (
-            index === completedIndex + 1 &&
-            step.status !== "completed"
-          ) {
-
-            return {
-              ...step,
-              status: "active"
-            };
-
-          }
-
-          return step;
-
-        }
-      );
-
-    });
-
+      }
+    );
   };
 
 
@@ -208,60 +262,77 @@ function ResumeUpload({ setResult }) {
     payload,
     completionState
   ) => {
-
-    if (payload.type === "step_started") {
-
+    if (
+      payload.type ===
+      "step_started"
+    ) {
       updateWorkflowStep(
         payload.step,
         "active"
       );
 
       addTimelineEvent(
-        `${payload.label || payload.step} started`
+        `${
+          payload.label ||
+          payload.step
+        } started`
       );
 
       return;
-
     }
 
 
-    if (payload.type === "step_completed") {
-
+    if (
+      payload.type ===
+      "step_completed"
+    ) {
       completeStepAndActivateNext(
         payload.step
       );
 
       addTimelineEvent(
-        `${payload.label || payload.step} completed`,
+        `${
+          payload.label ||
+          payload.step
+        } completed`,
+
         "completed"
       );
 
       return;
-
     }
 
 
-    if (payload.type === "pipeline_started") {
-
+    if (
+      payload.type ===
+      "pipeline_started"
+    ) {
       addTimelineEvent(
         "LangGraph multi-agent workflow started"
       );
 
       return;
-
     }
 
 
-    if (payload.type === "completed") {
-
-      setWorkflowSteps((currentSteps) =>
-        currentSteps.map((step) => ({
-          ...step,
-          status: "completed"
-        }))
+    if (
+      payload.type ===
+      "completed"
+    ) {
+      setWorkflowSteps(
+        (currentSteps) =>
+          currentSteps.map(
+            (step) => ({
+              ...step,
+              status:
+                "completed"
+            })
+          )
       );
 
-      setResult(payload.result);
+      setResult(
+        payload.result
+      );
 
       addTimelineEvent(
         "AI resume generation completed",
@@ -273,15 +344,17 @@ function ResumeUpload({ setResult }) {
         "success"
       );
 
-      completionState.completed = true;
+      completionState.completed =
+        true;
 
       return;
-
     }
 
 
-    if (payload.type === "error") {
-
+    if (
+      payload.type ===
+      "error"
+    ) {
       completionState.error =
         payload.message ||
         "The AI workflow failed.";
@@ -290,338 +363,367 @@ function ResumeUpload({ setResult }) {
         completionState.error,
         "error"
       );
-
     }
-
   };
 
 
-  const generateResume = async () => {
-
-    if (!file) {
-
-      showNotification(
-        "Please upload a resume before generating.",
-        "warning"
-      );
-
-      return;
-
-    }
-
-
-    if (!jobDescription.trim()) {
-
-      showNotification(
-        "Please enter the Job Description.",
-        "warning"
-      );
-
-      return;
-
-    }
-
-
-    setLoading(true);
-
-    setResult(null);
-
-    setErrorMessage("");
-
-    setTimeline([]);
-
-
-    setWorkflowSteps(
-      initialWorkflowSteps.map(
-        (step, index) => ({
-          ...step,
-          status:
-            index === 0
-              ? "active"
-              : "pending"
-        })
-      )
-    );
-
-
-    addTimelineEvent(
-      `Resume selected: ${file.name}`
-    );
-
-
-    const formData = new FormData();
-
-    formData.append(
-      "file",
-      file
-    );
-
-    formData.append(
-      "job_description",
-      jobDescription.trim()
-    );
-
-
-    try {
-
-      const baseUrl =
-        api.defaults.baseURL ||
-        "http://127.0.0.1:8000";
-
-
-      const response = await fetch(
-        `${baseUrl}/generate-ai-resume-stream`,
-        {
-          method: "POST",
-
-          headers: {
-            Accept: "text/event-stream"
-          },
-
-          body: formData
-        }
-      );
-
-
-      if (!response.ok) {
-
-        let message =
-          "Unable to start the AI workflow.";
-
-
-        try {
-
-          const responseData =
-            await response.json();
-
-          message =
-            responseData.detail ||
-            message;
-
-        } catch {
-
-          const responseText =
-            await response.text();
-
-          if (responseText) {
-            message = responseText;
-          }
-
-        }
-
-
-        throw new Error(message);
-
-      }
-
-
-      if (!response.body) {
-
-        throw new Error(
-          "The browser did not provide a streaming response."
+  const generateResume =
+    async () => {
+      if (!file) {
+        showNotification(
+          "Please upload a resume before generating.",
+          "warning"
         );
 
-      }
-
-
-      const reader =
-        response.body.getReader();
-
-      const decoder =
-        new TextDecoder("utf-8");
-
-      let buffer = "";
-
-
-      const completionState = {
-        completed: false,
-        error: ""
-      };
-
-
-      while (true) {
-
-        const {
-          value,
-          done
-        } = await reader.read();
-
-
-        if (done) {
-          break;
-        }
-
-
-        buffer += decoder.decode(
-          value,
-          {
-            stream: true
-          }
-        );
-
-
-        const eventBlocks =
-          buffer.split(
-            /\r?\n\r?\n/
-          );
-
-
-        buffer =
-          eventBlocks.pop() || "";
-
-
-        for (
-          const eventBlock
-          of eventBlocks
-        ) {
-
-          const dataLines =
-            eventBlock
-              .split(/\r?\n/)
-              .filter(
-                (line) =>
-                  line.startsWith(
-                    "data:"
-                  )
-              )
-              .map(
-                (line) =>
-                  line.replace(
-                    /^data:\s?/,
-                    ""
-                  )
-              );
-
-
-          if (
-            dataLines.length === 0
-          ) {
-            continue;
-          }
-
-
-          const rawData =
-            dataLines.join("\n");
-
-
-          try {
-
-            const payload =
-              JSON.parse(rawData);
-
-
-            processStreamingEvent(
-              payload,
-              completionState
-            );
-
-
-            if (
-              completionState.error
-            ) {
-
-              throw new Error(
-                completionState.error
-              );
-
-            }
-
-          } catch (error) {
-
-            if (
-              error instanceof SyntaxError
-            ) {
-
-              console.error(
-                "Unable to parse streaming event:",
-                rawData
-              );
-
-              continue;
-
-            }
-
-
-            throw error;
-
-          }
-
-        }
-
+        return;
       }
 
 
       if (
-        !completionState.completed
+        !jobDescription.trim()
       ) {
-
-        throw new Error(
-          "The streaming connection closed before the workflow completed."
+        showNotification(
+          "Please enter the Job Description.",
+          "warning"
         );
 
+        return;
       }
 
-    } catch (error) {
 
-      console.error(error);
+      setLoading(true);
 
+      setResult(null);
 
-      const message =
-        error.message ||
-        "Something went wrong.";
+      setErrorMessage("");
 
-
-      setErrorMessage(message);
+      setTimeline([]);
 
 
       setWorkflowSteps(
-        (currentSteps) =>
-          currentSteps.map(
-            (step) =>
-              step.status === "active"
-                ? {
-                    ...step,
-                    status: "failed"
-                  }
-                : step
-          )
+        initialWorkflowSteps.map(
+          (
+            step,
+            index
+          ) => ({
+            ...step,
+
+            status:
+              index === 0
+                ? "active"
+                : "pending"
+          })
+        )
       );
 
 
       addTimelineEvent(
-        message,
-        "error"
+        `Resume selected: ${
+          file.name
+        }`
       );
 
 
-      showNotification(
-        message,
-        "error"
+      const formData =
+        new FormData();
+
+
+      formData.append(
+        "file",
+        file
       );
 
-    } finally {
 
-      setLoading(false);
+      formData.append(
+        "job_description",
+        jobDescription.trim()
+      );
 
-    }
 
-  };
+      try {
+        const baseUrl =
+          api.defaults
+            .baseURL ||
+          "http://127.0.0.1:8000";
+
+
+        const response =
+          await fetch(
+            `${baseUrl}/generate-ai-resume-stream`,
+            {
+              method:
+                "POST",
+
+              headers: {
+                Accept:
+                  "text/event-stream",
+
+                "X-API-Key":
+                  import.meta
+                    .env
+                    .VITE_API_KEY ||
+                  "resume_app_local_2026_secure"
+              },
+
+              body:
+                formData
+            }
+          );
+
+
+        if (
+          !response.ok
+        ) {
+          let message =
+            "Unable to start the AI workflow.";
+
+
+          try {
+            const responseData =
+              await response.json();
+
+            message =
+              responseData.detail ||
+              message;
+
+          } catch {
+            const responseText =
+              await response.text();
+
+            if (
+              responseText
+            ) {
+              message =
+                responseText;
+            }
+          }
+
+
+          throw new Error(
+            message
+          );
+        }
+
+
+        if (
+          !response.body
+        ) {
+          throw new Error(
+            "The browser did not provide a streaming response."
+          );
+        }
+
+
+        const reader =
+          response.body
+            .getReader();
+
+        const decoder =
+          new TextDecoder(
+            "utf-8"
+          );
+
+        let buffer = "";
+
+
+        const completionState = {
+          completed:
+            false,
+
+          error:
+            ""
+        };
+
+
+        while (true) {
+          const {
+            value,
+            done
+          } =
+            await reader.read();
+
+
+          if (done) {
+            break;
+          }
+
+
+          buffer +=
+            decoder.decode(
+              value,
+              {
+                stream:
+                  true
+              }
+            );
+
+
+          const eventBlocks =
+            buffer.split(
+              /\r?\n\r?\n/
+            );
+
+
+          buffer =
+            eventBlocks.pop() ||
+            "";
+
+
+          for (
+            const eventBlock
+            of eventBlocks
+          ) {
+            const dataLines =
+              eventBlock
+                .split(
+                  /\r?\n/
+                )
+                .filter(
+                  (line) =>
+                    line
+                      .startsWith(
+                        "data:"
+                      )
+                )
+                .map(
+                  (line) =>
+                    line.replace(
+                      /^data:\s?/,
+                      ""
+                    )
+                );
+
+
+            if (
+              dataLines.length ===
+              0
+            ) {
+              continue;
+            }
+
+
+            const rawData =
+              dataLines.join(
+                "\n"
+              );
+
+
+            try {
+              const payload =
+                JSON.parse(
+                  rawData
+                );
+
+
+              processStreamingEvent(
+                payload,
+                completionState
+              );
+
+
+              if (
+                completionState
+                  .error
+              ) {
+                throw new Error(
+                  completionState
+                    .error
+                );
+              }
+
+            } catch (
+              error
+            ) {
+              if (
+                error instanceof
+                SyntaxError
+              ) {
+                console.error(
+                  "Unable to parse streaming event:",
+                  rawData
+                );
+
+                continue;
+              }
+
+
+              throw error;
+            }
+          }
+        }
+
+
+        if (
+          !completionState
+            .completed
+        ) {
+          throw new Error(
+            "The streaming connection closed before the workflow completed."
+          );
+        }
+
+      } catch (
+        error
+      ) {
+        console.error(
+          error
+        );
+
+
+        const message =
+          error.message ||
+          "Something went wrong.";
+
+
+        setErrorMessage(
+          message
+        );
+
+
+        setWorkflowSteps(
+          (currentSteps) =>
+            currentSteps.map(
+              (step) =>
+                step.status ===
+                "active"
+                  ? {
+                      ...step,
+                      status:
+                        "failed"
+                    }
+                  : step
+            )
+        );
+
+
+        addTimelineEvent(
+          message,
+          "error"
+        );
+
+
+        showNotification(
+          message,
+          "error"
+        );
+
+      } finally {
+        setLoading(false);
+      }
+    };
 
 
   const handleFileSelection = (
     event
   ) => {
-
     const selectedFile =
-      event.target.files?.[0];
+      event.target
+        .files?.[0];
 
 
     if (!selectedFile) {
-
       setFile(null);
-
       return;
-
     }
 
 
@@ -639,11 +741,11 @@ function ResumeUpload({ setResult }) {
 
 
     if (
-      !allowedExtensions.includes(
-        extension
-      )
+      !allowedExtensions
+        .includes(
+          extension
+        )
     ) {
-
       setFile(null);
 
       showNotification(
@@ -651,21 +753,25 @@ function ResumeUpload({ setResult }) {
         "warning"
       );
 
-      event.target.value = "";
+      event.target.value =
+        "";
 
       return;
-
     }
 
 
-    setFile(selectedFile);
+    setFile(
+      selectedFile
+    );
 
 
     showNotification(
-      `${selectedFile.name} selected successfully.`,
+      `${
+        selectedFile.name
+      } selected successfully.`,
+
       "success"
     );
-
   };
 
 
@@ -676,46 +782,73 @@ function ResumeUpload({ setResult }) {
 
 
   return (
-
     <>
-
       <Box
         sx={{
+          width: "100%",
+
           maxWidth: 1000,
+
           mx: "auto",
-          mt: 3
+
+          mt: {
+            xs: 1,
+            md: 3
+          },
+
+          boxSizing:
+            "border-box"
         }}
       >
-
         <Card
           sx={{
-            borderRadius: 5,
-            background: "#1E1E1E",
+            width: "100%",
+
+            borderRadius: {
+              xs: 3,
+              sm: 4,
+              md: 5
+            },
+
+            background:
+              "#1E1E1E",
+
             border:
               "1px solid #333333",
+
             boxShadow:
               "0 15px 35px rgba(0,0,0,0.35)",
-            overflow: "hidden"
+
+            overflow:
+              "hidden"
           }}
         >
+          {/* HEADER */}
 
           <Box
             sx={{
               background:
                 "linear-gradient(135deg,#171717,#232323,#FF7A00)",
 
-              color: "#FFFFFF",
+              color:
+                "#FFFFFF",
 
               p: {
-                xs: 3,
+                xs: 2,
+                sm: 3,
                 md: 4
               }
             }}
           >
-
             <Typography
-              variant="h4"
               fontWeight="bold"
+              sx={{
+                fontSize: {
+                  xs: 24,
+                  sm: 28,
+                  md: 34
+                }
+              }}
             >
               Upload Your Resume
             </Typography>
@@ -724,7 +857,17 @@ function ResumeUpload({ setResult }) {
             <Typography
               sx={{
                 mt: 1,
-                color: "#D0D0D0"
+
+                color:
+                  "#D0D0D0",
+
+                fontSize: {
+                  xs: 14,
+                  md: 16
+                },
+
+                lineHeight:
+                  1.6
               }}
             >
               Upload a PDF or DOCX resume
@@ -732,56 +875,83 @@ function ResumeUpload({ setResult }) {
               description using the real-time
               AI workflow.
             </Typography>
-
           </Box>
 
 
           <CardContent
             sx={{
               p: {
-                xs: 3,
+                xs: 2,
+                sm: 3,
                 md: 4
+              },
+
+              "&:last-child": {
+                pb: {
+                  xs: 2,
+                  sm: 3,
+                  md: 4
+                }
               }
             }}
           >
+            {/* UPLOAD AREA */}
 
             <Box
               sx={{
                 border:
                   "2px dashed #FF7A00",
 
-                borderRadius: 4,
+                borderRadius:
+                  4,
 
                 p: {
-                  xs: 4,
+                  xs: 2.5,
+                  sm: 4,
                   md: 6
                 },
 
-                background: "#252525",
+                background:
+                  "#252525",
 
-                textAlign: "center",
+                textAlign:
+                  "center",
 
-                transition: "0.3s",
+                transition:
+                  "0.3s",
 
                 "&:hover": {
-                  background: "#2F2F2F"
+                  background:
+                    "#2F2F2F"
                 }
               }}
             >
-
               <CloudUploadIcon
                 sx={{
-                  fontSize: 70,
-                  color: "#FF7A00"
+                  fontSize: {
+                    xs: 48,
+                    sm: 60,
+                    md: 70
+                  },
+
+                  color:
+                    "#FF7A00"
                 }}
               />
 
 
               <Typography
-                variant="h5"
                 fontWeight="bold"
-                mt={2}
                 color="#FFFFFF"
+                sx={{
+                  mt: 2,
+
+                  fontSize: {
+                    xs: 19,
+                    sm: 22,
+                    md: 24
+                  }
+                }}
               >
                 Select Your Resume
               </Typography>
@@ -790,7 +960,14 @@ function ResumeUpload({ setResult }) {
               <Typography
                 sx={{
                   mt: 1,
-                  color: "#BDBDBD"
+
+                  color:
+                    "#BDBDBD",
+
+                  fontSize: {
+                    xs: 13,
+                    md: 15
+                  }
                 }}
               >
                 Supported formats:
@@ -801,11 +978,27 @@ function ResumeUpload({ setResult }) {
               <Button
                 variant="contained"
                 component="label"
-                disabled={loading}
+                disabled={
+                  loading
+                }
                 sx={{
                   mt: 3,
-                  borderRadius: 3,
-                  background: "#FF7A00",
+
+                  width: {
+                    xs: "100%",
+                    sm: "auto"
+                  },
+
+                  maxWidth: {
+                    xs: 280,
+                    sm: "none"
+                  },
+
+                  borderRadius:
+                    3,
+
+                  background:
+                    "#FF7A00",
 
                   "&:hover": {
                     background:
@@ -813,9 +1006,7 @@ function ResumeUpload({ setResult }) {
                   }
                 }}
               >
-
                 Browse Resume
-
 
                 <input
                   hidden
@@ -825,75 +1016,122 @@ function ResumeUpload({ setResult }) {
                     handleFileSelection
                   }
                 />
-
               </Button>
 
 
               {file && (
-
                 <Typography
-                  mt={3}
-                  color="#4ADE80"
-                  fontWeight="bold"
+                  sx={{
+                    mt: 3,
+
+                    color:
+                      "#4ADE80",
+
+                    fontWeight:
+                      "bold",
+
+                    fontSize: {
+                      xs: 13,
+                      md: 15
+                    },
+
+                    overflowWrap:
+                      "anywhere"
+                  }}
                 >
-                  Selected: {file.name}
+                  Selected: {
+                    file.name
+                  }
                 </Typography>
-
               )}
-
             </Box>
 
+
+            {/* JOB DESCRIPTION */}
 
             <TextField
               fullWidth
               multiline
-              rows={8}
-              label="Paste Job Description"
-              placeholder="Paste the complete Job Description here..."
-              value={jobDescription}
-              disabled={loading}
-              onChange={(event) =>
+
+              minRows={5}
+
+              maxRows={10}
+
+              label={
+                "Paste Job Description"
+              }
+
+              placeholder={
+                "Paste the complete Job Description here..."
+              }
+
+              value={
+                jobDescription
+              }
+
+              disabled={
+                loading
+              }
+
+              onChange={(
+                event
+              ) =>
                 setJobDescription(
                   event.target.value
                 )
               }
+
               sx={{
-                mt: 4,
+                mt: {
+                  xs: 3,
+                  md: 4
+                },
 
                 "& .MuiOutlinedInput-root":
-                  {
-                    color: "#FFFFFF",
+                {
+                  color:
+                    "#FFFFFF",
 
-                    "& fieldset": {
-                      borderColor:
-                        "#555555"
-                    },
-
-                    "&:hover fieldset":
-                      {
-                        borderColor:
-                          "#FF7A00"
-                      },
-
-                    "&.Mui-focused fieldset":
-                      {
-                        borderColor:
-                          "#FF7A00"
-                      }
+                  fontSize: {
+                    xs: 14,
+                    md: 16
                   },
+
+                  "& fieldset":
+                  {
+                    borderColor:
+                      "#555555"
+                  },
+
+                  "&:hover fieldset":
+                  {
+                    borderColor:
+                      "#FF7A00"
+                  },
+
+                  "&.Mui-focused fieldset":
+                  {
+                    borderColor:
+                      "#FF7A00"
+                  }
+                },
 
                 "& .MuiInputLabel-root":
-                  {
-                    color: "#BBBBBB"
-                  },
+                {
+                  color:
+                    "#BBBBBB"
+                },
 
                 "& .MuiInputLabel-root.Mui-focused":
-                  {
-                    color: "#FF7A00"
-                  }
+                {
+                  color:
+                    "#FF7A00"
+                }
               }}
             />
 
+
+            {/* GENERATE */}
 
             <Button
               fullWidth
@@ -902,12 +1140,28 @@ function ResumeUpload({ setResult }) {
               onClick={
                 generateResume
               }
-              disabled={loading}
+              disabled={
+                loading
+              }
               sx={{
-                mt: 4,
-                height: 60,
-                fontSize: 18,
-                borderRadius: 3,
+                mt: {
+                  xs: 3,
+                  md: 4
+                },
+
+                minHeight: {
+                  xs: 52,
+                  md: 60
+                },
+
+                fontSize: {
+                  xs: 15,
+                  sm: 16,
+                  md: 18
+                },
+
+                borderRadius:
+                  3,
 
                 background:
                   "linear-gradient(90deg,#FF7A00,#FF9F43)",
@@ -918,106 +1172,138 @@ function ResumeUpload({ setResult }) {
                 }
               }}
             >
-
               {loading
-                ? "AI Workflow Running..."
-                : "Generate AI Resume"}
-
+                ? (
+                  "AI Workflow Running..."
+                )
+                : (
+                  "Generate AI Resume"
+                )}
             </Button>
-
           </CardContent>
-
         </Card>
 
 
-        {(
-          loading ||
+        {(loading ||
           errorMessage ||
-          timeline.length > 0
-        ) && (
+          timeline.length >
+            0) && (
 
           <ProcessingLoader
             workflowSteps={
               workflowSteps
             }
-            progress={progress}
+
+            progress={
+              progress
+            }
+
             errorMessage={
               errorMessage
             }
-            timeline={timeline}
+
+            timeline={
+              timeline
+            }
           />
-
         )}
-
       </Box>
 
 
       <Snackbar
-        open={notification.open}
+        open={
+          notification.open
+        }
+
         autoHideDuration={
           notification.severity ===
           "error"
             ? 6000
             : 4000
         }
+
         onClose={
           closeNotification
         }
+
         anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "right"
+          vertical:
+            "bottom",
+
+          horizontal:
+            "center"
+        }}
+
+        sx={{
+          left: {
+            xs: 8,
+            sm: "auto"
+          },
+
+          right: {
+            xs: 8,
+            sm: 24
+          },
+
+          bottom: {
+            xs: 10,
+            sm: 24
+          }
         }}
       >
-
         <Alert
           onClose={
             closeNotification
           }
+
           severity={
             notification.severity
           }
+
           variant="filled"
+
           sx={{
-            width: "100%",
-            minWidth: {
-              xs: "auto",
-              sm: 350
-            },
-            borderRadius: 3,
-            fontWeight: 600,
+            width:
+              "100%",
+
+            maxWidth:
+              420,
+
+            borderRadius:
+              3,
+
+            fontWeight:
+              600,
+
             boxShadow:
               "0 12px 30px rgba(0,0,0,0.35)",
 
             "&.MuiAlert-filledSuccess":
-              {
-                backgroundColor:
-                  "#16803B"
-              },
+            {
+              backgroundColor:
+                "#16803B"
+            },
 
             "&.MuiAlert-filledWarning":
-              {
-                backgroundColor:
-                  "#E96F00"
-              },
+            {
+              backgroundColor:
+                "#E96F00"
+            },
 
             "&.MuiAlert-filledError":
-              {
-                backgroundColor:
-                  "#C62828"
-              }
+            {
+              backgroundColor:
+                "#C62828"
+            }
           }}
         >
-
-          {notification.message}
-
+          {
+            notification.message
+          }
         </Alert>
-
       </Snackbar>
-
     </>
-
   );
-
 }
 
 
