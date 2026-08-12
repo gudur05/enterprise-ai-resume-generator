@@ -717,44 +717,57 @@ function ResumeCopilot({
           sx={{
             position: "fixed",
 
+            left: {
+              xs: 8,
+              sm: "auto"
+            },
+
             right: {
-              xs: 10,
+              xs: 8,
               sm: 20,
               md: 30
             },
 
+            top: {
+              xs: 8,
+              sm: auto
+            },
+
             bottom: {
-              xs: 10,
+              xs: 8,
               sm: 20,
               md: 30
             },
 
             width: {
-              xs: "calc(100vw - 20px)",
+              xs: "calc(100vw - 16px)",
               sm: 470
             },
 
             height: {
-              xs: "calc(100vh - 20px)",
+              xs: "calc(100vh - 16px)",
               sm: 700
             },
 
             maxHeight: {
               xs:
-                "calc(100vh - 20px)",
+                "calc(100vh - 16px)",
 
               sm:
                 "88vh"
             },
 
-            zIndex: 1400,
+            zIndex: 1600,
 
             display: "flex",
 
             flexDirection:
               "column",
 
-            borderRadius: 5,
+            borderRadius: {
+              xs: 3,
+              sm: 5
+            },
 
             background:
               "#1E1E1E",
