@@ -49,17 +49,14 @@ const resumeActions = [
     label: "Improve Summary",
     action: "improve_summary"
   },
-
   {
     label: "Rewrite Experience",
     action: "rewrite_experience"
   },
-
   {
     label: "Optimize ATS Content",
     action: "optimize_ats"
   },
-
   {
     label: "Improve Job Match",
     action: "improve_job_match"
@@ -82,7 +79,6 @@ function ResumeCopilot({
   result,
   setResult
 }) {
-
   const [open, setOpen] =
     useState(false);
 
@@ -126,17 +122,11 @@ function ResumeCopilot({
     Boolean(result);
 
 
-  // =====================================================
-  // AUTO SCROLL CHAT
-  // =====================================================
-
   useEffect(() => {
-
     messagesEndRef.current
       ?.scrollIntoView({
         behavior: "smooth"
       });
-
   }, [
     messages,
     loading,
@@ -144,22 +134,12 @@ function ResumeCopilot({
   ]);
 
 
-  // =====================================================
-  // SWITCH TO RESUME COACH AFTER GENERATION
-  // =====================================================
-
   useEffect(() => {
-
     if (hasResumeResult) {
       setMode(1);
     }
-
   }, [hasResumeResult]);
 
-
-  // =====================================================
-  // UTILITIES
-  // =====================================================
 
   const splitCommaSeparatedValues = (
     value
@@ -196,7 +176,6 @@ function ResumeCopilot({
     field,
     value
   ) => {
-
     setResumeForm(
       (currentForm) => ({
         ...currentForm,
@@ -206,26 +185,17 @@ function ResumeCopilot({
   };
 
 
-  // =====================================================
-  // VALIDATE CREATE RESUME FORM
-  // =====================================================
-
   const validateResumeForm = () => {
-
     if (
       !resumeForm.name.trim()
     ) {
-      return (
-        "Please enter your name."
-      );
+      return "Please enter your name.";
     }
 
     if (
       !resumeForm.education.trim()
     ) {
-      return (
-        "Please enter your education."
-      );
+      return "Please enter your education.";
     }
 
     if (
@@ -256,13 +226,8 @@ function ResumeCopilot({
   };
 
 
-  // =====================================================
-  // GENERATE RESUME FROM COPILOT
-  // =====================================================
-
   const generateResumeFromCopilot =
     async () => {
-
       if (generating) {
         return;
       }
@@ -271,7 +236,6 @@ function ResumeCopilot({
         validateResumeForm();
 
       if (validationError) {
-
         setErrorMessage(
           validationError
         );
@@ -280,13 +244,10 @@ function ResumeCopilot({
       }
 
       setGenerating(true);
-
       setErrorMessage("");
-
       setSuccessMessage("");
 
       try {
-
         const response =
           await api.post(
             "/resume-copilot/generate",
@@ -332,7 +293,6 @@ function ResumeCopilot({
           response.data?.result;
 
         if (!generatedResult) {
-
           throw new Error(
             "The server did not return " +
             "a generated resume."
@@ -363,7 +323,6 @@ function ResumeCopilot({
         setMode(1);
 
       } catch (error) {
-
         console.error(
           error
         );
@@ -377,20 +336,14 @@ function ResumeCopilot({
         );
 
       } finally {
-
         setGenerating(false);
       }
     };
 
 
-  // =====================================================
-  // SEND CHAT QUESTION
-  // =====================================================
-
   const sendQuestion = async (
     selectedQuestion
   ) => {
-
     const finalQuestion =
       typeof selectedQuestion ===
       "string"
@@ -406,7 +359,6 @@ function ResumeCopilot({
     }
 
     if (!hasResumeResult) {
-
       setErrorMessage(
         "Create or upload a resume first " +
         "so the Copilot has resume context."
@@ -423,7 +375,6 @@ function ResumeCopilot({
     setMessages(
       (currentMessages) => [
         ...currentMessages,
-
         {
           role: "user",
           content: finalQuestion
@@ -432,13 +383,10 @@ function ResumeCopilot({
     );
 
     setQuestion("");
-
     setLoading(true);
-
     setErrorMessage("");
 
     try {
-
       const response =
         await api.post(
           "/resume-copilot/chat",
@@ -464,7 +412,6 @@ function ResumeCopilot({
       setMessages(
         (currentMessages) => [
           ...currentMessages,
-
           {
             role: "assistant",
             content: answer
@@ -473,7 +420,6 @@ function ResumeCopilot({
       );
 
     } catch (error) {
-
       console.error(
         error
       );
@@ -492,22 +438,16 @@ function ResumeCopilot({
       );
 
     } finally {
-
       setLoading(false);
     }
   };
 
-
-  // =====================================================
-  // APPLY QUICK RESUME IMPROVEMENT
-  // =====================================================
 
   const applyResumeAction =
     async (
       action,
       label
     ) => {
-
       if (
         !hasResumeResult ||
         actionLoading ||
@@ -521,11 +461,9 @@ function ResumeCopilot({
       );
 
       setErrorMessage("");
-
       setSuccessMessage("");
 
       try {
-
         const response =
           await api.post(
             "/resume-copilot/apply-action",
@@ -541,14 +479,12 @@ function ResumeCopilot({
           response.data?.result;
 
         if (!updatedResult) {
-
           throw new Error(
             "The server did not return " +
             "an updated resume."
           );
         }
 
-        // Update global dashboard result
         setResult(
           updatedResult
         );
@@ -566,7 +502,6 @@ function ResumeCopilot({
         setMessages(
           (currentMessages) => [
             ...currentMessages,
-
             {
               role: "assistant",
 
@@ -578,7 +513,6 @@ function ResumeCopilot({
         );
 
       } catch (error) {
-
         console.error(
           error
         );
@@ -592,41 +526,26 @@ function ResumeCopilot({
         );
 
       } finally {
-
         setActionLoading("");
       }
     };
 
 
-  // =====================================================
-  // CLEAR CHAT
-  // =====================================================
-
   const clearConversation = () => {
-
     setMessages([]);
-
     setQuestion("");
-
     setErrorMessage("");
-
     setSuccessMessage("");
   };
 
 
-  // =====================================================
-  // ENTER KEY
-  // =====================================================
-
   const handleKeyDown = (
     event
   ) => {
-
     if (
       event.key === "Enter" &&
       !event.shiftKey
     ) {
-
       event.preventDefault();
 
       sendQuestion();
@@ -634,23 +553,12 @@ function ResumeCopilot({
   };
 
 
-  // =====================================================
-  // UI
-  // =====================================================
-
   return (
     <>
-
-      {/* ===============================================
-          CLOSED COPILOT BUTTON
-      ================================================ */}
-
       {!open && (
-
         <Tooltip
           title="Open Resume Copilot"
         >
-
           <Button
             variant="contained"
             startIcon={
@@ -663,20 +571,26 @@ function ResumeCopilot({
               position: "fixed",
 
               right: {
-                xs: 18,
+                xs: 14,
                 md: 30
               },
 
               bottom: {
-                xs: 18,
+                xs: 14,
                 md: 30
               },
 
               zIndex: 1300,
 
-              minHeight: 56,
+              minHeight: {
+                xs: 50,
+                md: 56
+              },
 
-              px: 3,
+              px: {
+                xs: 2,
+                md: 3
+              },
 
               borderRadius: 4,
 
@@ -690,82 +604,72 @@ function ResumeCopilot({
               boxShadow:
                 "0 14px 35px rgba(255,122,0,0.35)",
 
+              fontSize: {
+                xs: 13,
+                sm: 14
+              },
+
               "&:hover": {
-
                 background:
-                  "linear-gradient(90deg,#FF9F43,#FFB866)",
-
-                transform:
-                  "translateY(-2px)"
+                  "linear-gradient(90deg,#FF9F43,#FFB866)"
               }
             }}
           >
             Resume Copilot
           </Button>
-
         </Tooltip>
       )}
 
 
-      {/* ===============================================
-          OPEN COPILOT WINDOW
-      ================================================ */}
-
       {open && (
-
         <Card
           sx={{
             position: "fixed",
 
+            top: {
+              xs: 0,
+              sm: "auto"
+            },
+
             left: {
-              xs: 8,
+              xs: 0,
               sm: "auto"
             },
 
             right: {
-              xs: 8,
+              xs: 0,
               sm: 20,
               md: 30
             },
 
-            top: {
-              xs: 8,
-              sm: auto
-            },
-
             bottom: {
-              xs: 8,
+              xs: 0,
               sm: 20,
               md: 30
             },
 
             width: {
-              xs: "calc(100vw - 16px)",
+              xs: "100%",
               sm: 470
             },
 
             height: {
-              xs: "calc(100vh - 16px)",
+              xs: "100dvh",
               sm: 700
             },
 
             maxHeight: {
-              xs:
-                "calc(100vh - 16px)",
-
-              sm:
-                "88vh"
+              xs: "100dvh",
+              sm: "88vh"
             },
 
             zIndex: 1600,
 
             display: "flex",
-
-            flexDirection:
-              "column",
+            flexDirection: "column",
 
             borderRadius: {
-              xs: 3,
+              xs: 0,
               sm: 5
             },
 
@@ -775,8 +679,11 @@ function ResumeCopilot({
             color:
               "#FFFFFF",
 
-            border:
-              "1px solid rgba(255,122,0,0.5)",
+            border: {
+              xs: "none",
+              sm:
+                "1px solid rgba(255,122,0,0.5)"
+            },
 
             boxShadow:
               "0 24px 60px rgba(0,0,0,0.55)",
@@ -785,46 +692,69 @@ function ResumeCopilot({
               "hidden"
           }}
         >
-
-          {/* ===========================================
-              HEADER
-          ============================================ */}
+          {/* HEADER */}
 
           <Box
             sx={{
-              p: 2.5,
+              p: {
+                xs: 1.5,
+                sm: 2.5
+              },
+
+              flexShrink: 0,
 
               background:
                 "linear-gradient(135deg,#171717,#2A211A,#FF7A00)"
             }}
           >
-
             <Stack
               direction="row"
               justifyContent="space-between"
               alignItems="center"
             >
-
               <Stack
                 direction="row"
-                spacing={1.5}
+                spacing={{
+                  xs: 1,
+                  sm: 1.5
+                }}
                 alignItems="center"
+                sx={{
+                  minWidth: 0
+                }}
               >
-
                 <Avatar
                   sx={{
                     bgcolor:
-                      "#FF7A00"
+                      "#FF7A00",
+
+                    width: {
+                      xs: 36,
+                      sm: 40
+                    },
+
+                    height: {
+                      xs: 36,
+                      sm: 40
+                    }
                   }}
                 >
                   <SmartToyIcon />
                 </Avatar>
 
-                <Box>
-
+                <Box
+                  sx={{
+                    minWidth: 0
+                  }}
+                >
                   <Typography
-                    variant="h6"
                     fontWeight="bold"
+                    sx={{
+                      fontSize: {
+                        xs: 17,
+                        sm: 20
+                      }
+                    }}
                   >
                     Resume Copilot
                   </Typography>
@@ -834,26 +764,27 @@ function ResumeCopilot({
                       color:
                         "#E0E0E0",
 
-                      fontSize: 13
+                      fontSize: {
+                        xs: 11,
+                        sm: 13
+                      }
                     }}
                   >
-                    Create and improve
-                    your resume
+                    Create and improve your resume
                   </Typography>
-
                 </Box>
-
               </Stack>
 
 
               <Stack
                 direction="row"
+                sx={{
+                  flexShrink: 0
+                }}
               >
-
                 <Tooltip
                   title="Clear"
                 >
-
                   <IconButton
                     onClick={
                       clearConversation
@@ -865,14 +796,12 @@ function ResumeCopilot({
                   >
                     <DeleteIcon />
                   </IconButton>
-
                 </Tooltip>
 
 
                 <Tooltip
                   title="Close"
                 >
-
                   <IconButton
                     onClick={() =>
                       setOpen(false)
@@ -884,22 +813,17 @@ function ResumeCopilot({
                   >
                     <CloseIcon />
                   </IconButton>
-
                 </Tooltip>
-
               </Stack>
-
             </Stack>
-
           </Box>
 
 
-          {/* ===========================================
-              TABS
-          ============================================ */}
+          {/* TABS */}
 
           <Tabs
             value={mode}
+
             onChange={(
               _,
               newValue
@@ -908,23 +832,44 @@ function ResumeCopilot({
                 newValue
               )
             }
+
             variant="fullWidth"
+
             sx={{
+              flexShrink: 0,
+
               background:
                 "#1E1E1E",
 
               borderBottom:
                 "1px solid #333333",
 
-              "& .MuiTab-root": {
+              "& .MuiTab-root":
+              {
                 color:
                   "#AFAFAF",
 
                 fontWeight:
-                  700
+                  700,
+
+                fontSize: {
+                  xs: 11,
+                  sm: 13
+                },
+
+                minHeight: {
+                  xs: 54,
+                  sm: 64
+                },
+
+                px: {
+                  xs: 0.5,
+                  sm: 1.5
+                }
               },
 
-              "& .Mui-selected": {
+              "& .Mui-selected":
+              {
                 color:
                   "#FF7A00 !important"
               },
@@ -936,12 +881,13 @@ function ResumeCopilot({
               }
             }}
           >
-
             <Tab
               icon={
                 <DescriptionIcon />
               }
+
               iconPosition="start"
+
               label="Create Resume"
             />
 
@@ -949,31 +895,35 @@ function ResumeCopilot({
               icon={
                 <ChatIcon />
               }
+
               iconPosition="start"
+
               label="Resume Coach"
             />
-
           </Tabs>
 
 
-          {/* ===========================================
-              ALERTS
-          ============================================ */}
-
           {(errorMessage ||
             successMessage) && (
-
             <Box
               sx={{
-                px: 2.5,
-                pt: 2
+                px: {
+                  xs: 1.5,
+                  sm: 2.5
+                },
+
+                pt: {
+                  xs: 1.5,
+                  sm: 2
+                },
+
+                flexShrink: 0
               }}
             >
-
               {errorMessage && (
-
                 <Alert
                   severity="error"
+
                   onClose={() =>
                     setErrorMessage("")
                   }
@@ -984,9 +934,9 @@ function ResumeCopilot({
 
 
               {successMessage && (
-
                 <Alert
                   severity="success"
+
                   onClose={() =>
                     setSuccessMessage("")
                   }
@@ -994,31 +944,34 @@ function ResumeCopilot({
                   {successMessage}
                 </Alert>
               )}
-
             </Box>
           )}
 
 
-          {/* ===========================================
-              CREATE RESUME TAB
-          ============================================ */}
+          {/* CREATE RESUME */}
 
           {mode === 0 && (
-
             <Box
               sx={{
                 flexGrow: 1,
 
+                minHeight: 0,
+
                 overflowY:
                   "auto",
 
-                p: 2.5,
+                WebkitOverflowScrolling:
+                  "touch",
+
+                p: {
+                  xs: 1.5,
+                  sm: 2.5
+                },
 
                 background:
                   "#171717"
               }}
             >
-
               <Typography
                 variant="h6"
                 fontWeight="bold"
@@ -1026,37 +979,50 @@ function ResumeCopilot({
                 Create Resume with AI
               </Typography>
 
+
               <Typography
                 sx={{
                   mt: 1,
 
-                  mb: 3,
+                  mb: {
+                    xs: 2,
+                    sm: 3
+                  },
 
                   color:
                     "#BDBDBD",
 
                   lineHeight:
-                    1.6
+                    1.6,
+
+                  fontSize: {
+                    xs: 13,
+                    sm: 14
+                  }
                 }}
               >
-                Enter your genuine career
-                details. The AI will optimize
-                the wording for the target
-                job without inventing
-                experience.
+                Enter your genuine career details.
+                The AI will optimize the wording
+                for the target job without
+                inventing experience.
               </Typography>
 
 
               <Stack
-                spacing={2}
+                spacing={{
+                  xs: 1.5,
+                  sm: 2
+                }}
               >
-
                 <TextField
                   fullWidth
+
                   label="Full Name"
+
                   value={
                     resumeForm.name
                   }
+
                   onChange={(
                     event
                   ) =>
@@ -1065,6 +1031,7 @@ function ResumeCopilot({
                       event.target.value
                     )
                   }
+
                   disabled={
                     generating
                   }
@@ -1073,13 +1040,17 @@ function ResumeCopilot({
 
                 <TextField
                   fullWidth
+
                   label="Education"
+
                   placeholder={
                     "Example: B.Tech in Computer Science"
                   }
+
                   value={
                     resumeForm.education
                   }
+
                   onChange={(
                     event
                   ) =>
@@ -1088,6 +1059,7 @@ function ResumeCopilot({
                       event.target.value
                     )
                   }
+
                   disabled={
                     generating
                   }
@@ -1096,13 +1068,17 @@ function ResumeCopilot({
 
                 <TextField
                   fullWidth
+
                   label="Skills"
+
                   placeholder={
                     "Python, FastAPI, React, AWS"
                   }
+
                   value={
                     resumeForm.skills
                   }
+
                   onChange={(
                     event
                   ) =>
@@ -1111,6 +1087,7 @@ function ResumeCopilot({
                       event.target.value
                     )
                   }
+
                   disabled={
                     generating
                   }
@@ -1120,15 +1097,19 @@ function ResumeCopilot({
                 <TextField
                   fullWidth
                   multiline
-                  rows={4}
+
+                  minRows={3}
+
                   label="Experience"
+
                   placeholder={
-                    "Describe your roles, responsibilities, " +
-                    "tools, and genuine achievements."
+                    "Describe your roles, responsibilities, tools, and genuine achievements."
                   }
+
                   value={
                     resumeForm.experience
                   }
+
                   onChange={(
                     event
                   ) =>
@@ -1137,6 +1118,7 @@ function ResumeCopilot({
                       event.target.value
                     )
                   }
+
                   disabled={
                     generating
                   }
@@ -1145,14 +1127,17 @@ function ResumeCopilot({
 
                 <TextField
                   fullWidth
+
                   label="Projects"
+
                   placeholder={
-                    "Enterprise AI Resume Generator, " +
-                    "Campaign Automation"
+                    "Enterprise AI Resume Generator, Campaign Automation"
                   }
+
                   value={
                     resumeForm.projects
                   }
+
                   onChange={(
                     event
                   ) =>
@@ -1161,6 +1146,7 @@ function ResumeCopilot({
                       event.target.value
                     )
                   }
+
                   disabled={
                     generating
                   }
@@ -1169,13 +1155,17 @@ function ResumeCopilot({
 
                 <TextField
                   fullWidth
+
                   label="Certifications"
+
                   placeholder={
                     "Google Data Analytics, AWS Practitioner"
                   }
+
                   value={
                     resumeForm.certifications
                   }
+
                   onChange={(
                     event
                   ) =>
@@ -1184,6 +1174,7 @@ function ResumeCopilot({
                       event.target.value
                     )
                   }
+
                   disabled={
                     generating
                   }
@@ -1193,14 +1184,18 @@ function ResumeCopilot({
                 <TextField
                   fullWidth
                   multiline
-                  rows={5}
+
+                  minRows={4}
+
                   label={
                     "Target Job Description"
                   }
+
                   value={
                     resumeForm
                       .jobDescription
                   }
+
                   onChange={(
                     event
                   ) =>
@@ -1209,6 +1204,7 @@ function ResumeCopilot({
                       event.target.value
                     )
                   }
+
                   disabled={
                     generating
                   }
@@ -1217,13 +1213,17 @@ function ResumeCopilot({
 
                 <Button
                   fullWidth
+
                   variant="contained"
+
                   onClick={
                     generateResumeFromCopilot
                   }
+
                   disabled={
                     generating
                   }
+
                   sx={{
                     minHeight: 52,
 
@@ -1237,13 +1237,12 @@ function ResumeCopilot({
                       700
                   }}
                 >
-
                   {generating
                     ? (
                       <>
-
                         <CircularProgress
                           size={20}
+
                           sx={{
                             mr: 1.5,
 
@@ -1253,69 +1252,67 @@ function ResumeCopilot({
                         />
 
                         Generating Resume...
-
                       </>
                     )
                     : (
                       "Generate My Resume"
                     )}
-
                 </Button>
-
               </Stack>
-
             </Box>
           )}
 
 
-          {/* ===========================================
-              RESUME COACH TAB
-          ============================================ */}
+          {/* RESUME COACH */}
 
           {mode === 1 && (
             <>
-
               <Box
                 sx={{
                   flexGrow: 1,
 
+                  minHeight: 0,
+
                   overflowY:
                     "auto",
 
-                  p: 2.5,
+                  WebkitOverflowScrolling:
+                    "touch",
+
+                  p: {
+                    xs: 1.5,
+                    sm: 2.5
+                  },
 
                   background:
                     "#171717"
                 }}
               >
-
                 {!hasResumeResult && (
-
                   <Alert
                     severity="info"
+
                     sx={{
                       mb: 3
                     }}
                   >
                     Create a resume using
                     the first tab or upload
-                    one through the main
-                    page to activate the
-                    Resume Coach.
+                    one through the main page
+                    to activate the Resume Coach.
                   </Alert>
                 )}
 
 
-                {/* =====================================
-                    QUICK RESUME IMPROVEMENTS
-                ====================================== */}
-
                 {hasResumeResult && (
-
                   <Paper
                     elevation={0}
+
                     sx={{
-                      p: 2.5,
+                      p: {
+                        xs: 1.5,
+                        sm: 2.5
+                      },
 
                       mb: 3,
 
@@ -1329,16 +1326,17 @@ function ResumeCopilot({
                         "1px solid rgba(255,122,0,0.28)"
                     }}
                   >
-
                     <Stack
                       direction="row"
+
                       spacing={1}
+
                       alignItems="center"
+
                       sx={{
                         mb: 1
                       }}
                     >
-
                       <AutoAwesomeIcon
                         sx={{
                           color:
@@ -1347,11 +1345,12 @@ function ResumeCopilot({
                       />
 
                       <Typography
-                        fontWeight={700}
+                        fontWeight={
+                          700
+                        }
                       >
                         Quick Resume Improvements
                       </Typography>
-
                     </Stack>
 
 
@@ -1369,22 +1368,22 @@ function ResumeCopilot({
                           1.6
                       }}
                     >
-                      Apply focused AI
-                      improvements directly
-                      to your generated resume.
+                      Apply focused AI improvements
+                      directly to your generated resume.
                     </Typography>
 
 
                     <Stack
                       direction="row"
+
                       spacing={1}
+
                       useFlexGap
+
                       flexWrap="wrap"
                     >
-
                       {resumeActions.map(
                         (item) => (
-
                           <Button
                             key={
                               item.action
@@ -1422,26 +1421,16 @@ function ResumeCopilot({
                                 "#FF9A3C",
 
                               background:
-                                "rgba(255,122,0,0.08)",
-
-                              "&:hover":
-                              {
-                                borderColor:
-                                  "#FF7A00",
-
-                                background:
-                                  "rgba(255,122,0,0.16)"
-                              }
+                                "rgba(255,122,0,0.08)"
                             }}
                           >
-
                             {actionLoading ===
                             item.action
                               ? (
                                 <>
-
                                   <CircularProgress
                                     size={14}
+
                                     sx={{
                                       mr: 1,
 
@@ -1451,36 +1440,29 @@ function ResumeCopilot({
                                   />
 
                                   Applying...
-
                                 </>
                               )
                               : (
                                 item.label
                               )}
-
                           </Button>
                         )
                       )}
-
                     </Stack>
-
                   </Paper>
                 )}
 
 
-                {/* =====================================
-                    WELCOME / SUGGESTED QUESTIONS
-                ====================================== */}
-
-                {messages.length ===
-                  0 && (
-
+                {messages.length === 0 && (
                   <Box>
-
                     <Paper
                       elevation={0}
+
                       sx={{
-                        p: 2.5,
+                        p: {
+                          xs: 1.5,
+                          sm: 2.5
+                        },
 
                         mb: 3,
 
@@ -1494,10 +1476,12 @@ function ResumeCopilot({
                           "1px solid rgba(255,122,0,0.32)"
                       }}
                     >
-
                       <Typography
                         color="#FFFFFF"
-                        fontWeight={700}
+
+                        fontWeight={
+                          700
+                        }
                       >
                         Ask me about your
                         generated resume.
@@ -1515,13 +1499,11 @@ function ResumeCopilot({
                             1.65
                         }}
                       >
-                        I can explain your
-                        ATS score, missing
-                        skills, job match,
+                        I can explain your ATS score,
+                        missing skills, job match,
                         summary, experience,
                         and recommendations.
                       </Typography>
-
                     </Paper>
 
 
@@ -1544,17 +1526,18 @@ function ResumeCopilot({
 
 
                     <Stack
-                      spacing={1.2}
+                      spacing={
+                        1.2
+                      }
+
                       sx={{
                         mb: 3
                       }}
                     >
-
                       {suggestedQuestions.map(
                         (
                           suggestion
                         ) => (
-
                           <Button
                             key={
                               suggestion
@@ -1587,49 +1570,33 @@ function ResumeCopilot({
                                 "#444444",
 
                               color:
-                                "#E5E5E5",
-
-                              "&:hover":
-                              {
-                                borderColor:
-                                  "#FF7A00",
-
-                                background:
-                                  "rgba(255,122,0,0.08)"
-                              }
+                                "#E5E5E5"
                             }}
                           >
                             {suggestion}
                           </Button>
                         )
                       )}
-
                     </Stack>
-
                   </Box>
                 )}
 
 
-                {/* =====================================
-                    CHAT MESSAGES
-                ====================================== */}
-
                 <Stack
-                  spacing={2}
+                  spacing={
+                    2
+                  }
                 >
-
                   {messages.map(
                     (
                       message,
                       index
                     ) => {
-
                       const isUser =
                         message.role ===
                         "user";
 
                       return (
-
                         <Stack
                           key={
                             `${message.role}-${index}`
@@ -1637,7 +1604,10 @@ function ResumeCopilot({
 
                           direction="row"
 
-                          spacing={1.2}
+                          spacing={{
+                            xs: 0.7,
+                            sm: 1.2
+                          }}
 
                           justifyContent={
                             isUser
@@ -1645,42 +1615,53 @@ function ResumeCopilot({
                               : "flex-start"
                           }
                         >
-
                           {!isUser && (
-
                             <Avatar
                               sx={{
-                                width:
-                                  34,
+                                width: {
+                                  xs: 30,
+                                  sm: 34
+                                },
 
-                                height:
-                                  34,
+                                height: {
+                                  xs: 30,
+                                  sm: 34
+                                },
 
                                 bgcolor:
                                   "#FF7A00"
                               }}
                             >
-
                               <SmartToyIcon
                                 sx={{
                                   fontSize:
-                                    20
+                                    18
                                 }}
                               />
-
                             </Avatar>
                           )}
 
 
                           <Paper
-                            elevation={0}
+                            elevation={
+                              0
+                            }
+
                             sx={{
-                              maxWidth:
-                                "80%",
+                              maxWidth: {
+                                xs: "85%",
+                                sm: "80%"
+                              },
 
-                              px: 2,
+                              px: {
+                                xs: 1.5,
+                                sm: 2
+                              },
 
-                              py: 1.5,
+                              py: {
+                                xs: 1,
+                                sm: 1.5
+                              },
 
                               borderRadius:
                                 3,
@@ -1694,7 +1675,6 @@ function ResumeCopilot({
                                 "#FFFFFF"
                             }}
                           >
-
                             <Typography
                               sx={{
                                 whiteSpace:
@@ -1704,35 +1684,46 @@ function ResumeCopilot({
                                   "anywhere",
 
                                 lineHeight:
-                                  1.7
+                                  1.7,
+
+                                fontSize: {
+                                  xs: 13,
+                                  sm: 14
+                                }
                               }}
                             >
                               {
                                 message.content
                               }
                             </Typography>
-
                           </Paper>
 
 
                           {isUser && (
-
                             <Avatar
                               sx={{
-                                width:
-                                  34,
+                                width: {
+                                  xs: 30,
+                                  sm: 34
+                                },
 
-                                height:
-                                  34,
+                                height: {
+                                  xs: 30,
+                                  sm: 34
+                                },
 
                                 bgcolor:
                                   "#444444"
                               }}
                             >
-                              <PersonIcon />
+                              <PersonIcon
+                                sx={{
+                                  fontSize:
+                                    18
+                                }}
+                              />
                             </Avatar>
                           )}
-
                         </Stack>
                       );
                     }
@@ -1740,15 +1731,20 @@ function ResumeCopilot({
 
 
                   {loading && (
-
                     <Stack
                       direction="row"
-                      spacing={1.5}
+
+                      spacing={
+                        1.5
+                      }
+
                       alignItems="center"
                     >
-
                       <CircularProgress
-                        size={20}
+                        size={
+                          20
+                        }
+
                         sx={{
                           color:
                             "#FF7A00"
@@ -1758,24 +1754,27 @@ function ResumeCopilot({
                       <Typography
                         color="#BDBDBD"
                       >
-                        Resume Copilot is
-                        thinking...
+                        Resume Copilot is thinking...
                       </Typography>
-
                     </Stack>
                   )}
 
 
                   {actionLoading && (
-
                     <Stack
                       direction="row"
-                      spacing={1.5}
+
+                      spacing={
+                        1.5
+                      }
+
                       alignItems="center"
                     >
-
                       <CircularProgress
-                        size={20}
+                        size={
+                          20
+                        }
+
                         sx={{
                           color:
                             "#FF7A00"
@@ -1785,13 +1784,10 @@ function ResumeCopilot({
                       <Typography
                         color="#BDBDBD"
                       >
-                        Updating your
-                        resume...
+                        Updating your resume...
                       </Typography>
-
                     </Stack>
                   )}
-
                 </Stack>
 
 
@@ -1800,16 +1796,13 @@ function ResumeCopilot({
                     messagesEndRef
                   }
                 />
-
               </Box>
 
 
-              {/* =====================================
-                  CHAT INPUT
-              ====================================== */}
-
               <Divider
                 sx={{
+                  flexShrink: 0,
+
                   borderColor:
                     "#333333"
                 }}
@@ -1818,19 +1811,34 @@ function ResumeCopilot({
 
               <Box
                 sx={{
-                  p: 2,
+                  flexShrink: 0,
+
+                  p: {
+                    xs: 1,
+                    sm: 2
+                  },
+
+                  pb: {
+                    xs:
+                      "calc(8px + env(safe-area-inset-bottom))",
+
+                    sm: 2
+                  },
 
                   background:
                     "#1E1E1E"
                 }}
               >
-
                 <Stack
                   direction="row"
-                  spacing={1.2}
+
+                  spacing={{
+                    xs: 0.7,
+                    sm: 1.2
+                  }}
+
                   alignItems="flex-end"
                 >
-
                   <TextField
                     fullWidth
                     multiline
@@ -1850,21 +1858,15 @@ function ResumeCopilot({
 
                     placeholder={
                       hasResumeResult
-                        ? (
-                          "Ask about your resume..."
-                        )
-                        : (
-                          "Generate a resume first"
-                        )
+                        ? "Ask about your resume..."
+                        : "Generate a resume first"
                     }
 
                     onChange={(
                       event
                     ) =>
                       setQuestion(
-                        event
-                          .target
-                          .value
+                        event.target.value
                       )
                     }
 
@@ -1889,17 +1891,24 @@ function ResumeCopilot({
                     }
 
                     sx={{
-                      width:
-                        48,
+                      width: {
+                        xs: 44,
+                        sm: 48
+                      },
 
-                      height:
-                        48,
+                      height: {
+                        xs: 44,
+                        sm: 48
+                      },
 
                       bgcolor:
                         "#FF7A00",
 
                       color:
                         "#FFFFFF",
+
+                      flexShrink:
+                        0,
 
                       "&:hover":
                       {
@@ -1919,17 +1928,12 @@ function ResumeCopilot({
                   >
                     <SendIcon />
                   </IconButton>
-
                 </Stack>
-
               </Box>
-
             </>
           )}
-
         </Card>
       )}
-
     </>
   );
 }
