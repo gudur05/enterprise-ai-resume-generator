@@ -30,7 +30,7 @@ st.set_page_config(
     page_title="Enterprise AI Resume Generator",
     page_icon="🤖",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="auto"
 )
 
 
@@ -70,6 +70,72 @@ div[data-testid="stStatusWidget"] {
 html,
 body {
     background: #030712 !important;
+}
+
+
+/* =====================================================
+   PAGE FIT / REMOVE HORIZONTAL SCROLL
+===================================================== */
+
+html,
+body {
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+}
+
+.stApp {
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+}
+
+[data-testid="stAppViewContainer"] {
+    overflow-x: hidden !important;
+}
+
+[data-testid="stMain"] {
+    overflow-x: hidden !important;
+}
+
+[data-testid="stMainBlockContainer"] {
+    width: 100% !important;
+    max-width: 1400px !important;
+    box-sizing: border-box !important;
+}
+
+.block-container {
+    width: 100% !important;
+    max-width: 1400px !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+}
+
+.hero {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+[data-testid="stHorizontalBlock"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+[data-testid="column"] {
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+}
+
+section[data-testid="stSidebar"] {
+    box-sizing: border-box !important;
+}
+
+.stButton,
+.stDownloadButton,
+div[data-testid="stTextArea"],
+div[data-testid="stFileUploader"] {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
 }
 
 .stApp {
@@ -1134,6 +1200,246 @@ div[data-testid="stChatMessage"] p {
 }
 
 
+
+
+
+/* =====================================================
+   DESKTOP INITIAL PAGE - COMPACT ONE-SCREEN LAYOUT
+===================================================== */
+
+@media (min-width: 769px) {
+
+    .block-container {
+        padding-top: 0.65rem !important;
+        padding-bottom: 1.25rem !important;
+    }
+
+    .hero {
+        padding: 1.65rem 2.35rem !important;
+        border-radius: 20px !important;
+        margin-bottom: 1.05rem !important;
+    }
+
+    .hero-badge {
+        padding: 0.35rem 0.8rem !important;
+        font-size: 11px !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    .hero-title {
+        font-size: 34px !important;
+        line-height: 1.12 !important;
+    }
+
+    .hero-text {
+        font-size: 15px !important;
+        line-height: 1.55 !important;
+        margin-top: 0.8rem !important;
+    }
+
+    [data-testid="stMainBlockContainer"] > div > [data-testid="stVerticalBlock"] {
+        gap: 0.75rem !important;
+    }
+
+    h3 {
+        font-size: 20px !important;
+        margin-top: 0.15rem !important;
+        margin-bottom: 0.35rem !important;
+    }
+
+    label {
+        font-size: 15px !important;
+    }
+
+    section[data-testid="stFileUploaderDropzone"] {
+        min-height: 88px !important;
+        padding-top: 0.45rem !important;
+        padding-bottom: 0.45rem !important;
+    }
+
+    section[data-testid="stFileUploaderDropzone"] span,
+    section[data-testid="stFileUploaderDropzone"] small,
+    section[data-testid="stFileUploaderDropzone"] p {
+        font-size: 14px !important;
+        line-height: 1.35 !important;
+    }
+
+    section[data-testid="stFileUploaderDropzone"] button {
+        font-size: 14px !important;
+    }
+
+    div[data-testid="stTextArea"] textarea {
+        font-size: 15px !important;
+        line-height: 1.5 !important;
+    }
+
+    .stButton > button {
+        min-height: 46px !important;
+        font-size: 15px !important;
+    }
+}
+
+@media (min-width: 769px) and (max-height: 850px) {
+
+    .block-container {
+        padding-top: 0.35rem !important;
+        padding-bottom: 0.75rem !important;
+    }
+
+    .hero {
+        padding: 1.25rem 2rem !important;
+        margin-bottom: 0.65rem !important;
+    }
+
+    .hero-badge {
+        margin-bottom: 0.5rem !important;
+    }
+
+    .hero-title {
+        font-size: 30px !important;
+    }
+
+    .hero-text {
+        font-size: 14px !important;
+        line-height: 1.45 !important;
+        margin-top: 0.55rem !important;
+    }
+
+    [data-testid="stMainBlockContainer"] > div > [data-testid="stVerticalBlock"] {
+        gap: 0.45rem !important;
+    }
+
+    section[data-testid="stFileUploaderDropzone"] {
+        min-height: 76px !important;
+    }
+
+    .stButton > button {
+        min-height: 42px !important;
+    }
+}
+
+
+/* =====================================================
+   TABLET / SMALL DESKTOP FIT
+===================================================== */
+
+@media (max-width: 1200px) {
+
+    .block-container {
+        padding-left: 1.25rem !important;
+        padding-right: 1.25rem !important;
+    }
+
+    .hero {
+        padding: 2.2rem 2.2rem;
+    }
+
+    .hero-title {
+        font-size: 34px;
+    }
+}
+
+
+
+/* =====================================================
+   MOBILE NAVIGATION
+   Uses app-owned links instead of Streamlit's internal
+   sidebar-toggle DOM, which can change between releases.
+===================================================== */
+
+.mobile-nav {
+    display: none;
+}
+
+@media (max-width: 768px) {
+
+    /* We do not depend on Streamlit's sidebar opener on mobile. */
+    [data-testid="stSidebarCollapsedControl"],
+    div[data-testid="collapsedControl"] {
+        display: none !important;
+    }
+
+    .mobile-nav {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.45rem;
+        width: 100%;
+        margin: 0 0 0.9rem 0;
+        padding: 0.45rem;
+        box-sizing: border-box;
+        border-radius: 14px;
+        background: rgba(7, 17, 31, 0.96);
+        border: 1px solid rgba(51, 153, 255, 0.25);
+        position: sticky;
+        top: 0.35rem;
+        z-index: 9999;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+    }
+
+    .mobile-nav a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 0;
+        min-height: 42px;
+        padding: 0.45rem 0.3rem;
+        border-radius: 10px;
+        text-decoration: none !important;
+        color: #DCE9F7 !important;
+        background: #0A1B2F;
+        border: 1px solid rgba(51, 153, 255, 0.15);
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1.2;
+        text-align: center;
+    }
+
+    .mobile-nav a.active {
+        color: #FFFFFF !important;
+        background: linear-gradient(90deg,#0867F2,#09A9EF);
+        border-color: rgba(80, 181, 255, 0.65);
+        box-shadow: 0 7px 18px rgba(0, 119, 255, 0.22);
+    }
+
+    .mobile-nav a:active {
+        transform: scale(0.98);
+    }
+
+    /* Keep the desktop/sidebar panel out of the way on phones. */
+    section[data-testid="stSidebar"] {
+        z-index: 9998 !important;
+    }
+}
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.app-footer {
+    margin-top: 1.5rem;
+    padding: 0.8rem 0 0.5rem 0;
+    text-align: center;
+    color: #8FA6BF;
+    font-size: 12px;
+    border-top: 1px solid rgba(51, 153, 255, 0.12);
+}
+
+.app-footer strong {
+    color: #BFD7EE;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .app-footer {
+        margin-top: 1.5rem;
+        font-size: 12px;
+        padding-bottom: 0.8rem;
+    }
+}
+
+
+
 /* =====================================================
    MOBILE
 ===================================================== */
@@ -1353,6 +1659,37 @@ def score_ring_background(score):
 
 
 # =========================================================
+# RESPONSIVE NAVIGATION STATE
+# =========================================================
+
+PAGE_KEYS = {
+    "resume": "🏠 Resume Generator",
+    "copilot": "🤖 Resume Copilot",
+    "system": "⚙️ System"
+}
+
+PAGE_TO_KEY = {
+    value: key
+    for key, value in PAGE_KEYS.items()
+}
+
+requested_page = (
+    st.query_params.get(
+        "page",
+        "resume"
+    )
+)
+
+if requested_page not in PAGE_KEYS:
+
+    requested_page = "resume"
+
+default_page = PAGE_KEYS[
+    requested_page
+]
+
+
+# =========================================================
 # SIDEBAR
 # =========================================================
 
@@ -1376,13 +1713,18 @@ Resume Intelligence Platform
     )
 
 
+    sidebar_pages = [
+        "🏠 Resume Generator",
+        "🤖 Resume Copilot",
+        "⚙️ System"
+    ]
+
     page = st.radio(
         "Navigation",
-        [
-            "🏠 Resume Generator",
-            "🤖 Resume Copilot",
-            "⚙️ System"
-        ],
+        sidebar_pages,
+        index=sidebar_pages.index(
+            default_page
+        ),
         label_visibility=
             "collapsed"
     )
@@ -1427,6 +1769,29 @@ Resume Intelligence Platform
     st.caption(
         "FastAPI + LangGraph + OpenAI"
     )
+
+
+# =========================================================
+# MOBILE NAVIGATION
+# =========================================================
+
+active_key = PAGE_TO_KEY.get(
+    page,
+    "resume"
+)
+
+mobile_nav_html = f"""
+<div class="mobile-nav">
+<a class="{'active' if active_key == 'resume' else ''}" href="?page=resume">🏠<br>Resume</a>
+<a class="{'active' if active_key == 'copilot' else ''}" href="?page=copilot">🤖<br>Copilot</a>
+<a class="{'active' if active_key == 'system' else ''}" href="?page=system">⚙️<br>System</a>
+</div>
+"""
+
+st.markdown(
+    mobile_nav_html,
+    unsafe_allow_html=True
+)
 
 
 # =========================================================
@@ -1509,7 +1874,7 @@ and calculate job-match alignment.
         job_description = (
             st.text_area(
                 "Job Description",
-                height=260,
+                height=190,
                 placeholder=(
                     "Paste the complete "
                     "job description here..."
@@ -2552,3 +2917,16 @@ Generator services.
                 "Unable to reach backend: "
                 f"{exc}"
             )
+
+# =========================================================
+# FOOTER
+# =========================================================
+
+st.markdown(
+    """
+<div class="app-footer">
+Created by <strong>Divya Gudur</strong>
+</div>
+""",
+    unsafe_allow_html=True
+)
