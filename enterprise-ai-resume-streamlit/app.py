@@ -30,7 +30,7 @@ st.set_page_config(
     page_title="Enterprise AI Resume Generator",
     page_icon="🤖",
     layout="wide",
-    initial_sidebar_state="auto"
+    initial_sidebar_state="expanded"
 )
 
 
@@ -1341,6 +1341,44 @@ div[data-testid="stChatMessage"] p {
 
 
 
+
+/* =====================================================
+   DESKTOP SIDEBAR + MOBILE NAV BEHAVIOR
+===================================================== */
+
+/* Desktop/tablet: keep the Streamlit sidebar visible */
+@media (min-width: 769px) {
+
+    section[data-testid="stSidebar"] {
+        display: block !important;
+        visibility: visible !important;
+        transform: none !important;
+    }
+
+    .mobile-nav {
+        display: none !important;
+    }
+}
+
+/* Mobile: hide Streamlit sidebar and use custom top nav */
+@media (max-width: 768px) {
+
+    section[data-testid="stSidebar"] {
+        display: none !important;
+        visibility: hidden !important;
+    }
+
+    [data-testid="stSidebarCollapsedControl"],
+    div[data-testid="collapsedControl"] {
+        display: none !important;
+    }
+
+    .mobile-nav {
+        display: grid !important;
+    }
+}
+
+
 /* =====================================================
    MOBILE NAVIGATION
    Uses app-owned links instead of Streamlit's internal
@@ -1348,7 +1386,7 @@ div[data-testid="stChatMessage"] p {
 ===================================================== */
 
 .mobile-nav {
-    display: none;
+    display: none !important;
 }
 
 @media (max-width: 768px) {
